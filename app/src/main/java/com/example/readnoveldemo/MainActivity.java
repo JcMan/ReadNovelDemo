@@ -1,27 +1,17 @@
 package com.example.readnoveldemo;
-import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.martian.libsliding.SlidingLayout;
-import com.martian.libsliding.SlidingAdapter;
 import com.martian.libsliding.slider.OverlappedSlider;
 import com.martian.libsliding.slider.PageSlider;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
