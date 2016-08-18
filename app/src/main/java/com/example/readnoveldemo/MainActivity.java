@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         mFactory = new TestFactory(this);
         mFactory.setBgBitmap(R.mipmap.ic_bg_blue);
         try {
-            mFactory.openbook(Environment.getExternalStorageDirectory().getAbsolutePath()+"/280.txt");
+            mFactory.openbook(Environment.getExternalStorageDirectory().getAbsolutePath()+"/book.txt");
         } catch (IOException e){
             e.printStackTrace();
         }
