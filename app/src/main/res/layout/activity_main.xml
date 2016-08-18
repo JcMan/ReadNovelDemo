@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.martian.libsliding.SlidingLayout
@@ -7,4 +7,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </com.martian.libsliding.SlidingLayout>
-</FrameLayout>
+    <TextView
+        android:textColor="#000"
+        android:textSize="12sp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/tv_progress"
+        android:layout_marginBottom="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+</RelativeLayout>

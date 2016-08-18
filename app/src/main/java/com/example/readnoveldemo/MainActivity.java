@@ -6,20 +6,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.martian.libsliding.SlidingLayout;
 import com.martian.libsliding.slider.OverlappedSlider;
 import com.martian.libsliding.slider.PageSlider;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
     private SlidingLayout mSlidingLayout;
     private boolean mPagerMode = false;
     private TestFactory mFactory;
+    private TextView mProgress;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         setContentView(R.layout.activity_main);
+        mProgress = (TextView) findViewById(R.id.tv_progress);
         mSlidingLayout = (SlidingLayout) findViewById(R.id.sliding_container);
         mSlidingLayout.setOnTapListener(new SlidingLayout.OnTapListener() {
 
@@ -51,12 +55,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void switchSlidingMode(){
+        MySlidingAdapter mAdapter = new MySlidingAdapter(this,mFactory,0);
+        mAdapter.setOnPageChangedListener(new MySlidingAdapter.OnPageChangedListener() {
+            @Override
+            public void onProgress(float progress) {
+                DecimalFormat format = new DecimalFormat("0.00%");
+                mProgress.setText(format.format(progress));
+            }
+        });
         if (mPagerMode){
-            mSlidingLayout.setAdapter(new MySlidingAdapter(this,mFactory,0));
+            mSlidingLayout.setAdapter(mAdapter);
             mSlidingLayout.setSlider(new OverlappedSlider());
             Toast.makeText(this, "已切换为左右覆盖模式", Toast.LENGTH_SHORT).show();
         } else {
-            mSlidingLayout.setAdapter(new MySlidingAdapter(this,mFactory,0));
+            mSlidingLayout.setAdapter(mAdapter);
             mSlidingLayout.setSlider(new PageSlider());
             Toast.makeText(this, "已切换为左右平移模式", Toast.LENGTH_SHORT).show();
         }
@@ -65,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item){
         if (item.getItemId() == R.id.action_switch) {
             switchSlidingMode();
             return true;

@@ -15,6 +15,8 @@ public class MySlidingAdapter extends SlidingAdapter<Bitmap> {
     private int mFirstPageEndPos = 0;
     private TestFactory mBookFactory;
     private Context mContext;
+    private OnPageChangedListener mListener;
+
     public MySlidingAdapter(Context context,TestFactory factory, int pos){
         mContext = context;
         mPos = pos;
@@ -80,6 +82,16 @@ public class MySlidingAdapter extends SlidingAdapter<Bitmap> {
         Bitmap bitmap = mBookFactory.getNextPageBitmap();
         mBookFactory.getPrePageBitmap();
         mPos = mBookFactory.getEndPos();
+        if (mListener!=null)
+            mListener.onProgress((float) (mPos*1.0/mBookFactory.getBufLength()));
         return bitmap;
+    }
+
+    public interface OnPageChangedListener{
+        void onProgress(float progress);
+    }
+
+    public void setOnPageChangedListener(OnPageChangedListener listener){
+        mListener = listener;
     }
 }

@@ -59,7 +59,7 @@ public class TestFactory {
 		mHeight = display.getHeight();//获得宽和高
 		mContext = activity;
 		marginWidth = (int) (mWidth*0.04);
-		marginHeight = (int) (mHeight*0.03);
+		marginHeight = (int) (mHeight*0.038);
 		mVisibleWidth = mWidth - marginWidth * 2;
 		mVisibleHeight = mHeight - marginHeight * 2;//绘制的内容宽和高
 		m_fontSize = (int) (mWidth*0.045);
@@ -321,6 +321,10 @@ public class TestFactory {
 
 	public int getEndPos(){
 		return m_mbBufEnd;
+	}
+
+	public int getBufLength(){
+		return m_mbBufLen;
 	}
 
 	public void onDraw(Canvas c) {
