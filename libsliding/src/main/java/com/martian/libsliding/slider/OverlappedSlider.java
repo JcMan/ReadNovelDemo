@@ -89,7 +89,7 @@ public class OverlappedSlider extends BaseSlider {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (!mScroller.isFinished()) {
+                if (!mScroller.isFinished()){
                     return false;
                 }
                 if (startX == 0) {

@@ -12,7 +12,7 @@ import com.martian.libsliding.SlidingAdapter;
 /**
  * Created by xuzb on 1/16/15.
  */
-public class PageSlider extends BaseSlider {
+public class PageSlider extends BaseSlider{
     private Scroller mScroller;
     private VelocityTracker mVelocityTracker;
 
@@ -98,14 +98,12 @@ public class PageSlider extends BaseSlider {
                         mDirection = MOVE_TO_LEFT;
                         mMoveLastPage = !getAdapter().hasNext();
                         mMoveFirstPage = false;
-
                         mSlidingLayout.slideScrollStateChanged(MOVE_TO_LEFT);
 
                     } else if (distance < 0) {
                         mDirection = MOVE_TO_RIGHT;
                         mMoveFirstPage = !getAdapter().hasPrevious();
                         mMoveLastPage = false;
-
                         mSlidingLayout.slideScrollStateChanged(MOVE_TO_RIGHT);
                     }
                 }
@@ -120,7 +118,9 @@ public class PageSlider extends BaseSlider {
                         mMode = MODE_NONE;
                     }
                 }
-
+                if (mMoveFirstPage||mMoveLastPage){
+                    mMode = MODE_NONE;
+                }
                 if (mDirection != MOVE_NO_RESULT) {
                     if (mDirection == MOVE_TO_LEFT) {
                         mLeftScrollerView = getCurrentShowView();
@@ -168,11 +168,8 @@ public class PageSlider extends BaseSlider {
 
                     }
                 }
-
                 invalidate();
-
                 break;
-
             case MotionEvent.ACTION_UP:
 
                 if ((mLeftScrollerView == null && mDirection == MOVE_TO_LEFT) ||
