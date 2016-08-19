@@ -3,15 +3,20 @@ import android.os.Environment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.readnoveldemo.adapter.MySlidingAdapter;
 import com.example.readnoveldemo.util.NovelFactory;
+import com.example.readnoveldemo.util.PopupWinUtil;
 import com.example.readnoveldemo.util.SpUtil;
 import com.martian.libsliding.SlidingLayout;
 import com.martian.libsliding.slider.OverlappedSlider;
@@ -55,11 +60,34 @@ public class MainActivity extends AppCompatActivity {
                     mSlidingLayout.slideNext();
                 } else if (x <= screenWidth*0.3) {
                     mSlidingLayout.slidePrevious();
+                }else{
+                    showPopupWin();
                 }
             }
         });
         // 默认为左右平移模式
         switchSlidingMode();
+    }
+
+    private void showPopupWin() {
+        final PopupWindow win = PopupWinUtil.createPopupWindow(this,R.layout.v_popup);
+        win.showAtLocation(getWindow().getDecorView(),
+                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        View content = win.getContentView();
+        Button btn_switch = (Button) content.findViewById(R.id.btn_switch);
+        Button btn_catalog = (Button) content.findViewById(R.id.btn_catalog);
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId()==R.id.btn_switch){
+                    switchSlidingMode();
+                }
+                win.dismiss();
+            }
+        };
+        btn_catalog.setOnClickListener(listener);
+        btn_switch.setOnClickListener(listener);
+
     }
 
     private void switchSlidingMode(){
