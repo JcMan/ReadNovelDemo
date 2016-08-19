@@ -1,4 +1,4 @@
-package com.example.readnoveldemo;
+package com.example.readnoveldemo.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,12 +17,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-public class TestFactory {
+public class NovelFactory {
 
-	//把字体绘制到界面上
 	private File book_file = null;
 	private MappedByteBuffer m_mbBuf = null;//MappedByteBuffer 将文件直接映射到内存
 	private int m_mbBufLen = 0;
@@ -52,7 +52,7 @@ public class TestFactory {
 	private Context mContext;
 
 	//设置阅读界面，包括字体，显示多少行
-	public TestFactory(Activity activity) {
+	public NovelFactory(Activity activity){
 		WindowManager manager = activity.getWindowManager();
 		Display display = manager.getDefaultDisplay();
 		mWidth = display.getWidth();
@@ -73,13 +73,19 @@ public class TestFactory {
 	}
 
 	//获得文件，并映射到内存
-	public void openbook(String strFilePath) throws IOException {
+	public void openbook(String strFilePath) throws IOException{
 		book_file = new File(strFilePath);
-		long lLen = book_file.length();//文本长度
-		m_mbBufLen = (int) lLen;//缓存的长度
+		SpUtil spUtil = new SpUtil(mContext);
+		if (spUtil.getEncodingName(strFilePath).length()==0){
+			m_strCharsetName = EncodingDetect.getJavaEncode(book_file.getAbsolutePath());
+			spUtil.setEncodingName(strFilePath,m_strCharsetName);
+		}else{
+			m_strCharsetName = spUtil.getEncodingName(strFilePath);
+		}
+		long lLen = book_file.length();
+		m_mbBufLen = (int) lLen;
 		m_mbBuf = new RandomAccessFile(book_file, "r").getChannel().map(
 				FileChannel.MapMode.READ_ONLY, 0, lLen);
-		//RandomAccessFile是用来访问那些保存数据记录的文件的
 	}
 
 

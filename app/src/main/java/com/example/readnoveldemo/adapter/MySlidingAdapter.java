@@ -1,10 +1,11 @@
-package com.example.readnoveldemo;
+package com.example.readnoveldemo.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.readnoveldemo.util.NovelFactory;
 import com.martian.libsliding.SlidingAdapter;
 
 /**
@@ -13,11 +14,11 @@ import com.martian.libsliding.SlidingAdapter;
 public class MySlidingAdapter extends SlidingAdapter<Bitmap> {
     private int mPos = 0;
     private int mFirstPageEndPos = 0;
-    private TestFactory mBookFactory;
+    private NovelFactory mBookFactory;
     private Context mContext;
     private OnPageChangedListener mListener;
 
-    public MySlidingAdapter(Context context,TestFactory factory, int pos){
+    public MySlidingAdapter(Context context, NovelFactory factory, int pos){
         mContext = context;
         mPos = pos;
         mBookFactory = factory;
@@ -83,12 +84,12 @@ public class MySlidingAdapter extends SlidingAdapter<Bitmap> {
         mBookFactory.getPrePageBitmap();
         mPos = mBookFactory.getEndPos();
         if (mListener!=null)
-            mListener.onProgress((float) (mPos*1.0/mBookFactory.getBufLength()));
+            mListener.onProgress((float) (mPos*1.0/mBookFactory.getBufLength()),mPos);
         return bitmap;
     }
 
     public interface OnPageChangedListener{
-        void onProgress(float progress);
+        void onProgress(float progress,int pos);
     }
 
     public void setOnPageChangedListener(OnPageChangedListener listener){
