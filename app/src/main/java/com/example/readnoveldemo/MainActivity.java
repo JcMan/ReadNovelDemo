@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private SlidingLayout mSlidingLayout;
     private boolean mPagerMode = false;
     private NovelFactory mFactory;
+    private MySlidingAdapter mAdapter;
     private TextView mProgress,mTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -90,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void switchSlidingMode(){
-        final SpUtil spUtil = new SpUtil(this);
+        SpUtil spUtil = new SpUtil(this);
         int pos = spUtil.getHistoryPos();
-        MySlidingAdapter mAdapter = new MySlidingAdapter(this,mFactory,pos);
+        mAdapter = new MySlidingAdapter(this,mFactory,pos);
         mAdapter.setOnPageChangedListener(new MySlidingAdapter.OnPageChangedListener(){
             @Override
             public void onProgress(float progress,int pos){
@@ -101,15 +102,15 @@ public class MainActivity extends AppCompatActivity {
                 SimpleDateFormat ft = new SimpleDateFormat("HH:mm");
                 mTimer.setText(ft.format(date));
                 mProgress.setText(format.format(progress));
-                spUtil.setHistoryPos(pos);
+                SpUtil util = new SpUtil(MainActivity.this);
+                util.setHistoryPos(pos);
             }
         });
+        mSlidingLayout.setAdapter(mAdapter);
         if (mPagerMode){
-            mSlidingLayout.setAdapter(mAdapter);
             mSlidingLayout.setSlider(new OverlappedSlider());
             Toast.makeText(this, "已切换为左右覆盖模式", Toast.LENGTH_SHORT).show();
         } else {
-            mSlidingLayout.setAdapter(mAdapter);
             mSlidingLayout.setSlider(new PageSlider());
             Toast.makeText(this, "已切换为左右平移模式", Toast.LENGTH_SHORT).show();
         }

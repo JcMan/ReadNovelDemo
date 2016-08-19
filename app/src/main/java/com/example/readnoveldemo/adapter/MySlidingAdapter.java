@@ -36,6 +36,8 @@ public class MySlidingAdapter extends SlidingAdapter<Bitmap> {
         }
         tv_content.setImageBitmap(bitmap);
         contentView = tv_content;
+        if (mListener!=null)
+            mListener.onProgress((float) (mPos*1.0/mBookFactory.getBufLength()),mPos);
         return contentView;
     }
     @Override
@@ -83,8 +85,6 @@ public class MySlidingAdapter extends SlidingAdapter<Bitmap> {
         Bitmap bitmap = mBookFactory.getNextPageBitmap();
         mBookFactory.getPrePageBitmap();
         mPos = mBookFactory.getEndPos();
-        if (mListener!=null)
-            mListener.onProgress((float) (mPos*1.0/mBookFactory.getBufLength()),mPos);
         return bitmap;
     }
 
