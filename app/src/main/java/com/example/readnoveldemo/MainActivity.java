@@ -71,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showPopupWin() {
         final PopupWindow win = PopupWinUtil.createPopupWindow(this,R.layout.v_popup);
-        win.showAtLocation(getWindow().getDecorView(),
-                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        PopupWinUtil.show(this,win);
         View content = win.getContentView();
         Button btn_switch = (Button) content.findViewById(R.id.btn_switch);
         Button btn_catalog = (Button) content.findViewById(R.id.btn_catalog);

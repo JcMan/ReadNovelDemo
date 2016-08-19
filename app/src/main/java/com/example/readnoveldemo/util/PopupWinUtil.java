@@ -2,6 +2,7 @@ package com.example.readnoveldemo.util;
 
 import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
@@ -21,6 +22,11 @@ public class PopupWinUtil {
         popupWindow.setAnimationStyle(R.style.popwin_anim);
         popupWindow.setFocusable(true);
         return popupWindow;
+    }
+
+    public static void show(Activity activity,PopupWindow win){
+        win.showAtLocation(activity.getWindow().getDecorView(),
+                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
     }
     public PopupWindow getPopupWindow() {
         return popupWindow;
