@@ -7,7 +7,11 @@ import java.io.UnsupportedEncodingException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,6 +24,8 @@ import android.graphics.Paint.Align;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+
+import com.example.readnoveldemo.Chapter;
 
 public class NovelFactory {
 
@@ -284,8 +290,65 @@ public class NovelFactory {
 		return bitmap;
 	}
 
+	private String getLineString(){
+		byte[] buf = readParagraphForward(m_mbBufEnd);
+		m_mbBufEnd+=buf.length;
+		String s = "";
+		try {
+			s = new String(buf,m_strCharsetName);
+		} catch (UnsupportedEncodingException e){
+			e.printStackTrace();
+		}
+		return s;
+	}
 
+	private int getByteLength(String str){
+		byte[] bytes = null;
+		try {
+			bytes = str.getBytes(m_strCharsetName);
+		} catch (UnsupportedEncodingException e){
+			e.printStackTrace();
+		}
+		return bytes.length;
+	}
 
+	public void getChapters(final OnChapterListener listener){
+		m_mbBufEnd = 0;
+		final List<Chapter> chapters = new ArrayList<>();
+		try {
+			listener.onStart();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while(m_mbBufEnd<m_mbBufLen-1){
+						String regex = "第.{1,8}章.{0,}\r\n";
+						Pattern pattern = Pattern.compile(regex);
+						Matcher matcher = null;
+						String strLine = getLineString();
+						matcher = pattern.matcher(strLine);
+						if (matcher.find()){
+							int pos = m_mbBufEnd - getByteLength(strLine);
+							String title = matcher.group();
+							Chapter chapter = new Chapter();
+							chapter.mPos = pos;
+							chapter.mTitle = title.replaceAll("\r\n","");
+							chapters.add(chapter);
+							listener.onLoading(chapter);
+						}
+					}
+					listener.onFinished(chapters);
+				}
+			}).start();
+		}catch (Exception e){
+
+		}
+	}
+
+	public interface OnChapterListener{
+		void onStart();
+		void onLoading(Chapter chapter);
+		void onFinished(List<Chapter> list);
+	}
 
 	public Bitmap getNextPageBitmap(){
 		return drawCancas(pageDown());

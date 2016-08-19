@@ -1,4 +1,5 @@
 package com.example.readnoveldemo;
+import android.content.Intent;
 import android.os.Environment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.readnoveldemo.adapter.MySlidingAdapter;
+import com.example.readnoveldemo.util.DialogUtil;
 import com.example.readnoveldemo.util.NovelFactory;
 import com.example.readnoveldemo.util.PopupWinUtil;
 import com.example.readnoveldemo.util.SpUtil;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,31 +73,45 @@ public class MainActivity extends AppCompatActivity {
         switchSlidingMode();
     }
 
-    private void showPopupWin() {
+    private void showPopupWin(){
         final PopupWindow win = PopupWinUtil.createPopupWindow(this,R.layout.v_popup);
         PopupWinUtil.show(this,win);
         View content = win.getContentView();
         Button btn_switch = (Button) content.findViewById(R.id.btn_switch);
         Button btn_catalog = (Button) content.findViewById(R.id.btn_catalog);
-        View.OnClickListener listener = new View.OnClickListener() {
+        View.OnClickListener listener = new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 if (v.getId()==R.id.btn_switch){
                     switchSlidingMode();
+                }else if(v.getId()==R.id.btn_catalog){
+                    startActivityForResult(new Intent(MainActivity.this,ChapterActivity.class),101);
                 }
                 win.dismiss();
             }
         };
         btn_catalog.setOnClickListener(listener);
         btn_switch.setOnClickListener(listener);
-
     }
 
     private void switchSlidingMode(){
+        setAdapter();
+        if (mPagerMode){
+            mSlidingLayout.setSlider(new OverlappedSlider());
+            Toast.makeText(this, "已切换为左右覆盖模式", Toast.LENGTH_SHORT).show();
+        } else {
+            mSlidingLayout.setSlider(new PageSlider());
+            Toast.makeText(this, "已切换为左右平移模式", Toast.LENGTH_SHORT).show();
+        }
+        mPagerMode = !mPagerMode;
+    }
+
+    private void setAdapter() {
         SpUtil spUtil = new SpUtil(this);
         int pos = spUtil.getHistoryPos();
         mAdapter = new MySlidingAdapter(this,mFactory,pos);
         mAdapter.setOnPageChangedListener(new MySlidingAdapter.OnPageChangedListener(){
+
             @Override
             public void onProgress(float progress,int pos){
                 DecimalFormat format = new DecimalFormat("0.00%");
@@ -107,16 +124,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mSlidingLayout.setAdapter(mAdapter);
-        if (mPagerMode){
-            mSlidingLayout.setSlider(new OverlappedSlider());
-            Toast.makeText(this, "已切换为左右覆盖模式", Toast.LENGTH_SHORT).show();
-        } else {
-            mSlidingLayout.setSlider(new PageSlider());
-            Toast.makeText(this, "已切换为左右平移模式", Toast.LENGTH_SHORT).show();
-        }
-        mPagerMode = !mPagerMode;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
@@ -133,4 +141,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==101&&resultCode==102){
+            int pos = data.getIntExtra("pos",0);
+            if (pos!=0){
+                SpUtil spUtil = new SpUtil(this);
+                spUtil.setHistoryPos(pos);
+                setAdapter();
+            }
+        }
+    }
 }
